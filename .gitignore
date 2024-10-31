@@ -29,6 +29,7 @@ ENV/
 env/
 env.bak/
 venv.bak/
+api_env/
 
 # macOS specific files
 .DS_Store

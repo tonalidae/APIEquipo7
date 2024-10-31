@@ -1,18 +1,249 @@
-/* style.css */
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+/* Importing Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&display=swap');
 
+/* CSS Variables for Light and Dark Themes */
+:root {
+    /* Light Theme Colors */
+    --primary-blue: #4A90E2;
+    --primary-purple: #8E44AD;
+    --accent-pink: #FF6B6B;
+    --accent-teal: #A0E7E5;
+    --neutral-white: #FFFFFF;
+    --neutral-light-gray: #F5F5F5;
+    --neutral-gray: #7F8C8D;
+    --neutral-dark: #2C3E50;
+    --text-color: #2C3E50;
+    --background-color: #FFFFFF;
+    --card-background: rgba(255, 255, 255, 0.85);
+    --button-hover: #66C2D0; /* Teal hover */
+    --link-color: #FF6B6B;
+}
 
-/* style.css */
+body.dark-theme {
+    /* Dark Theme Colors */
+    --primary-blue: #007AFF;        /* More saturated blue */
+    --primary-purple: #5856D6;      /* Rich purple */
+    --accent-pink: #FF2D55;         /* Vibrant pink */
+    --accent-teal: #A0E7E5         /* Bright teal */
+    --neutral-white: #FFFFFF;       /* Pure white for contrast */
+    --neutral-light-gray: #8E8E93;  /* Darker light gray */
+    --neutral-gray: #48484A;        /* Darker medium gray */
+    --neutral-dark: #121212;        /* Very dark background */
+    --text-color: #F2F2F7;          /* Slightly off-white text */
+    --background-color: #1A1A1A;    /* Dark but not pure black */
+    --card-background: rgba(18, 18, 18, 0.95); /* Nearly opaque dark cards */
+    --button-hover: #0071E3;        /* Darker blue hover */
+    --link-color: #5856D6;          /* Consistent purple for links */
+}
+
+/* Global Styles */
 body {
+    background-color: var(--background-color);
     background-image: url('https://yourdomain.com/background.png');
     background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+/* Container for Content to Add a Semi-Transparent Overlay */
+.stApp {
+    background-color: var(--card-background);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Styles */
+h1, .stApp h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--primary-purple);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h2, .stApp h2 {
+    color: var(--primary-blue);
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* Sidebar Styles */
+.sidebar .sidebar-content {
+    background-color: var(--card-background);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar .sidebar-content img {
+    border-radius: 50%;
+    margin-bottom: 20px;
+    border: 3px solid var(--primary-blue);
+}
+
+/* Button Styles */
+.stButton > button {
+    background-color: var(--primary-blue);
+    color: var(--neutral-white);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.stButton > button:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-2px);
+}
+
+/* File Uploader Styles */
+.stFileUploader > div > div {
+    background-color: var(--neutral-light-gray);
+    border: 2px dashed var(--primary-blue);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    color: var(--neutral-gray);
+    transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+}
+
+.stFileUploader > div > div:hover {
+    border-color: var(--accent-pink);
+    background-color: var(--neutral-gray);
+    color: var(--neutral-white);
+}
+
+/* Tabs Styles */
+div.stTabs {
+    background-color: var(--card-background);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+div.stTabs > div {
+    border: none;
+}
+
+div.stTabs > div > div > div {
+    background-color: var(--card-background);
+    color: var(--text-color);
+    font-weight: 400;
     font-family: 'Roboto', sans-serif;
 }
-h1 {
-    color: #FF4B4B;
-    font-family: 'Roboto', sans-serif;
+
+div.stTabs > div > div > div:hover {
+    background-color: var(--accent-teal);
+    color: var(--neutral-white);
 }
-.stButton>button {
-    background-color: #FF4B4B;
-    color: white;
+
+div.stTabs > div > div > div[class*="active"] {
+    background-color: var(--primary-purple);
+    color: var(--neutral-white);
+}
+
+/* Image Display Styles */
+img {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Feedback Section Styles */
+.stRadio > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stRadio > div > label {
+    font-weight: 400;
+    color: var(--text-color);
+}
+
+/* Text Area Styles */
+.stTextArea textarea {
+    border: 2px solid var(--neutral-gray);
+    border-radius: 12px;
+    padding: 12px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+    background-color: var(--neutral-light-gray);
+    color: var(--text-color);
+}
+
+.stTextArea textarea:focus {
+    border-color: var(--accent-pink);
+    outline: none;
+    background-color: var(--neutral-white);
+    color: var(--neutral-dark);
+}
+
+/* Download Button Styles */
+.stDownloadButton > button {
+    background-color: var(--accent-teal);
+    color: var(--neutral-white);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.stDownloadButton > button:hover {
+    background-color: var(--primary-blue);
+    transform: translateY(-2px);
+}
+
+/* Twitter Share Link Styles */
+a[href*="twitter.com"] {
+    color: var(--link-color);
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.3s, text-decoration 0.3s;
+}
+
+a[href*="twitter.com"]:hover {
+    color: var(--primary-purple);
+    text-decoration: underline;
+}
+
+/* Expander Styles */
+.stExpander > div > button {
+    background-color: var(--primary-blue);
+    color: var(--neutral-white);
+    border: none;
+    border-radius: 24px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.stExpander > div > button:hover {
+    background-color: var(--accent-teal);
+    transform: translateY(-2px);
+}
+
+/* Footer Styles (if applicable) */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--neutral-light-gray);
+    color: var(--neutral-gray);
+    font-size: 14px;
+    border-top: 1px solid var(--neutral-gray);
 }

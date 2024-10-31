@@ -40,7 +40,7 @@ translations = {
 }
 
 with st.sidebar:
-    logo_path = 'logo.png'
+    logo_path = 'logo7.jpg'
     if os.path.exists(logo_path):
         st.image(logo_path, width=200)
     else:
@@ -170,7 +170,7 @@ if image is not None:
                 results = response.json()
                 
                 # Mostrar la respuesta completa para depuración
-                st.write("Respuesta de la API:", results)
+                # st.write("Respuesta de la API:", results)
 
                 # Suponiendo que la API devuelve 'expresion', 'confidences' y 'boxes'
                 expresion = class_to_idx.get(int(results.get('expresion', -1)), 'Desconocida')

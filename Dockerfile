@@ -1,22 +1,20 @@
-# Usar una imagen base de Python
-FROM python:3.8-slim
+# Utiliza una imagen base de Python 3.9 (también podrías usar otra versión compatible con Keras y FastAPI)
+FROM python:3.9-slim
 
-# Establecer el directorio de trabajo
+# Configura el directorio de trabajo
 WORKDIR /app
 
-# Copiar los archivos de requisitos y instalar las dependencias
+# Copia los archivos de requerimientos (requirements.txt) si existen
 COPY requirements.txt .
-RUN pip install -r requirements.txt
 
-# Copiar todos los archivos de código fuente al directorio de trabajo
-COPY . /app
+# Instala las dependencias
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Exponer los puertos para FastAPI y Streamlit
-EXPOSE 8000 8501
+# Copia el resto de los archivos de la aplicación en el contenedor
+COPY . .
 
-# Copiar y configurar el script de inicio
-COPY run_api.sh /app/
-RUN chmod +x /app/run_api.sh
+# Expone el puerto que usará la aplicación FastAPI
+EXPOSE 8000
 
-# Establecer el script de shell como el punto de entrada
-CMD ["/app/run_api.sh"]
+# Comando para ejecutar la API con Uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
