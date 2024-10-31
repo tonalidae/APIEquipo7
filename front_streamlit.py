@@ -27,6 +27,7 @@ translations = {
         'feedback_title': 'Expresión detectada',
         'submit_feedback': 'Enviar retroalimentación',
         'select_model': 'Seleccionar modelo:',
+        'model_options': ['Modelo A', 'Modelo B', 'Modelo C'],  # Added Modelo C
         'ethical_disclaimer': 'Aviso: Al cargar o capturar una imagen, confirmas que tienes los derechos para hacerlo y que la imagen no viola ninguna política de privacidad. Las imágenes no se almacenarán en el servidor.',
         'documentation_title': 'Documentación',
         'documentation_content': """
@@ -45,15 +46,11 @@ Este documento sirve como una guía detallada para el desarrollo del proyecto de
 - Ana Gaona Gómez  
 - Joice Clavijo  
 
-
-
 ## 2. Definición del Problema
 
 La capacidad de interpretar correctamente las emociones a través de expresiones faciales es fundamental en la comunicación humana. Sin embargo, la interpretación emocional está sujeta a la subjetividad, lo que varía según el contexto cultural y la experiencia personal. Para abordar esta dificultad, proponemos desarrollar un sistema automatizado basado en inteligencia artificial (IA) que clasifique con precisión las emociones humanas a partir de expresiones faciales.
 
 **Objetivo**: Desarrollar un modelo que alcance una precisión mínima del 85%, evaluado en situaciones reales para mejorar la comunicación, reducir la subjetividad y optimizar la calidad de servicios en ámbitos como la salud mental, recursos humanos y marketing.
-
-
 
 ## 4. Recolección de Datos
 
@@ -130,8 +127,6 @@ Las imágenes no se almacenan en el servidor y solo se utilizan para el análisi
 ## 11. Reflexiones 
 
 **Conclusión**: El proyecto logró desarrollar un modelo capaz de clasificar emociones a partir de expresiones faciales, cumpliendo el objetivo principal. A pesar de los desafíos encontrados, como el sobreajuste del modelo, el aprendizaje adquirido y la base establecida servirán para futuras mejoras y aplicaciones en el campo del análisis emocional.
-
-
         """,
     },
     'English': {
@@ -144,6 +139,7 @@ Las imágenes no se almacenan en el servidor y solo se utilizan para el análisi
         'feedback_title': 'Detected Expression',
         'submit_feedback': 'Submit Feedback',
         'select_model': 'Select Model:',
+        'model_options': ['Model A', 'Model B', 'Model C'],  # Added Model C
         'ethical_disclaimer': 'Disclaimer: By uploading or capturing an image, you confirm that you have the rights to do so and that the image does not violate any privacy policies. The images will not be stored on the server.',
         'documentation_title': 'Documentation',
         'documentation_content': """
@@ -171,16 +167,19 @@ Las imágenes no se almacenan en el servidor y solo se utilizan para el análisi
 }
 
 with st.sidebar:
+    # Display Logo
     logo_path = 'logo7.jpg'
     if os.path.exists(logo_path):
         st.image(logo_path, width=200)
     else:
         st.warning("Logo not found. Please add 'logo7.jpg' to the project directory.")
+
+    # Language Selection
     selected_language = st.selectbox("Idioma / Language", ["Español", "English"])
     texts = translations[selected_language]
 
-    # Model selection
-    model_options = ['Modelo A', 'Modelo B'] if selected_language == 'Español' else ['Model A', 'Model B']
+    # Model Selection
+    model_options = texts['model_options']
     selected_model = st.selectbox(texts['select_model'], model_options)
 
 # 3. Main Title
@@ -264,11 +263,10 @@ with tab1:
                 st.error("La foto tomada no es una imagen válida." if selected_language == 'Español' else "The captured photo is not a valid image.")
 
     elif image_source == texts['select_sample_image']:
-        sample_label = texts['select_sample_image']
-        selected_sample = st.selectbox(sample_label, list(sample_images.keys()))
+        selected_sample = st.selectbox(texts['select_sample_image'], list(sample_images.keys()))
         image = load_sample_image(sample_images[selected_sample])
         if image:
-            st.image(image, caption=sample_label, use_column_width=True)
+            st.image(image, caption=texts['select_sample_image'], use_column_width=True)
 
     st.info(texts['ethical_disclaimer'])
 
@@ -285,8 +283,10 @@ with tab1:
         model_mapping = {
             'Modelo A': 'model_a',
             'Modelo B': 'model_b',
+            'Modelo C': 'model_c',  # Added Model C
             'Model A': 'model_a',
-            'Model B': 'model_b'
+            'Model B': 'model_b',
+            'Model C': 'model_c'   # Added Model C
         }
         model_id = model_mapping[selected_model]
         API_URL = "https://1e53-186-154-39-104.ngrok-free.app/sentiment/image/"
@@ -384,6 +384,6 @@ with tab1:
 
             **Neutral**: Facial expression without marked emotions.
         """)
-
+    
 with tab2:
     st.markdown(texts['documentation_content'])
