@@ -27,25 +27,111 @@ translations = {
         'ethical_disclaimer': 'Aviso: Al cargar o capturar una imagen, confirmas que tienes los derechos para hacerlo y que la imagen no viola ninguna política de privacidad. Las imágenes no se almacenarán en el servidor.',
         'documentation_title': 'Documentación',
         'documentation_content': """
-            # Documentación de la Aplicación
+            # Documentación del Proyecto de Clasificación de Emociones en Expresiones Faciales
 
-            Esta aplicación utiliza modelos de aprendizaje automático para analizar expresiones faciales en imágenes.
+Este documento sirve como una guía detallada para el desarrollo del proyecto de clasificación de emociones en expresiones faciales, llevado a cabo por el Equipo 7. A continuación, se presentan las distintas etapas del proyecto, incluyendo la definición del problema, la recolección de datos, el modelado y evaluación del modelo, así como la disponibilidad del modelo como una API.
 
-            ## Cómo usar la aplicación
+## 1. Información del Proyecto
 
-            1. **Cargar una imagen**: Puedes subir una imagen desde tu dispositivo o tomar una foto usando tu cámara.
-            2. **Seleccionar el modelo**: Elige entre los modelos disponibles para el análisis.
-            3. **Analizar la imagen**: Haz clic en 'Analizar imagen' para obtener la predicción.
-            4. **Proporcionar retroalimentación**: Indica si la predicción es correcta y proporciona comentarios adicionales si lo deseas.
+**Nombre del Proyecto**: Clasificación de Emociones en Expresiones Faciales
 
-            ## Acerca de los modelos
+**Integrantes del equipo**:  
 
-            Los modelos disponibles han sido entrenados en diferentes conjuntos de datos y pueden variar en precisión y velocidad.
+- Laura Vivan  
+- Isabel Kimura  
+- Stephanie Cely  
+- Ana Gaona Gómez  
+- Joice Clavijo 
 
-            ## Privacidad y Ética
 
-            Las imágenes no se almacenan en el servidor y solo se utilizan para el análisis durante la sesión actual. Consulta el aviso ético para más detalles.
-        """,
+## 2. Definición del Problema
+
+La capacidad de interpretar correctamente las emociones a través de expresiones faciales es fundamental en la comunicación humana. Sin embargo, la interpretación emocional está sujeta a la subjetividad, lo que varía según el contexto cultural y la experiencia personal. Para abordar esta dificultad, proponemos desarrollar un sistema automatizado basado en inteligencia artificial (IA) que clasifique con precisión las emociones humanas a partir de expresiones faciales.
+
+**Objetivo**: Desarrollar un modelo que alcance una precisión mínima del 85%, evaluado en situaciones reales para mejorar la comunicación, reducir la subjetividad y optimizar la calidad de servicios en ámbitos como la salud mental, recursos humanos y marketing.
+
+
+
+## 4. Recolección de Datos
+
+**Datasets Utilizados**: FER-2013 y AffectNet, ambos disponibles en Kaggle. Se trata de datos no estructurados con formato de imagen (.jpg) y etiquetas (.csv). FER-2013 contiene 35,000 imágenes en 7 categorías emocionales, mientras que AffectNet posee 29,041 imágenes en 8 categorías (agrega la emoción "desprecio").
+
+**Calidad de los Datos**: Ambos datasets presentan variaciones en resolución y condiciones de iluminación. AffectNet se considera más diverso y mejor en calidad, lo cual fue determinante para su selección.
+
+**Aspectos Éticos y Privacidad**: Los datasets utilizados están disponibles públicamente y fueron diseñados para investigación, reduciendo riesgos de privacidad. Sin embargo, se garantiza que las imágenes no contienen información personal identificable y que se siguen las mejores prácticas para proteger la privacidad de los individuos.
+
+## 5. Exploración de Datos (EDA)
+
+Se realizó un análisis exploratorio de ambos datasets para entender mejor la distribución de las emociones y evaluar la calidad de las imágenes. AffectNet fue el dataset seleccionado debido a su mayor calidad y balance de clases.
+
+**Técnicas Utilizadas**: Se utilizó OpenCV para evaluar la calidad de las imágenes (borrosidad y ruido) y la biblioteca Mediapipe para analizar el movimiento de los landmarks faciales.
+
+**Conclusión**: AffectNet se eligió como el dataset principal ya que proporciona más información relevante para la clasificación de emociones.
+
+## 6. Modelado
+
+**Arquitectura del Modelo**: Se utilizó una red neuronal convolucional (CNN) con capas convolucionales, max-pooling, y una capa final con softmax para la clasificación de las emociones. También se evaluó el uso de modelos preentrenados como ResNet50 y Vision Transformer (ViT).
+
+**Preprocesamiento de Datos**: Las imágenes fueron redimensionadas a 96x96 píxeles y normalizadas dividiendo los valores de los píxeles entre 255. Se aplicó codificación one-hot a las etiquetas de las emociones.
+
+**Entrenamiento del Modelo**: El modelo se entrenó durante 10 épocas con un tamaño de lote de 32 y optimizador Adam. La función de pérdida utilizada fue categorical_crossentropy.
+
+**Evaluación del Modelo**: El modelo logró una precisión del 54.3% en el conjunto de validación. Se detectó sobreajuste al comparar la precisión en entrenamiento y validación, lo cual sugiere la necesidad de mejorar la arquitectura o la regularización del modelo.
+
+## 7. Disponibilidad del Modelo como API
+
+Para facilitar el acceso al modelo, desarrollamos una API utilizando FastAPI. La API recibe una imagen facial y devuelve una etiqueta que representa la emoción detectada. Este servicio es accesible y fácilmente integrable en aplicaciones en tiempo real.
+
+**Detalles de la API**:  
+- **Endpoint**: /sentiment/image/  
+- **Método**: POST  
+- **Parámetro**: file (imagen a analizar)  
+- **Respuesta**: JSON con la clave "expresion" indicando la emoción clasificada
+
+## 8. Documentación de la Aplicación
+
+Esta aplicación utiliza modelos de aprendizaje automático para analizar expresiones faciales en imágenes.
+
+### Cómo usar la aplicación
+
+1. **Cargar una imagen**: Puedes subir una imagen desde tu dispositivo o tomar una foto usando tu cámara.  
+2. **Seleccionar el modelo**: Elige entre los modelos disponibles para el análisis.  
+3. **Analizar la imagen**: Haz clic en 'Analizar imagen' para obtener la predicción.  
+4. **Proporcionar retroalimentación**: Indica si la predicción es correcta y proporciona comentarios adicionales si lo deseas.
+
+### Acerca de los modelos
+
+Los modelos disponibles han sido entrenados en diferentes conjuntos de datos y pueden variar en precisión y velocidad.
+
+### Privacidad y Ética
+
+Las imágenes no se almacenan en el servidor y solo se utilizan para el análisis durante la sesión actual. Consulta el aviso ético para más detalles.
+
+## 9. Monitoreo y Mantenimiento del Modelo
+
+**Monitoreo**: Se utilizarán herramientas como Prometheus y Grafana para monitorear la precisión de las predicciones y el tiempo de respuesta de la API. Se configurarán alertas automáticas para detectar y abordar de inmediato cualquier cambio significativo en el rendimiento del modelo.
+
+**Plan de Mantenimiento**: Se realizarán revisiones periódicas del modelo para asegurar que se mantenga actualizado y relevante. Además, se implementará un sistema de retroalimentación para permitir a los usuarios reportar clasificaciones incorrectas.
+
+**Reentrenamiento**: Si se obtienen nuevos datos o si el rendimiento disminuye significativamente, se procederá a reentrenar el modelo.
+
+## 10. Próximos Pasos y Oportunidades de Mejora
+
+**Siguientes Acciones**:  
+- Integrar el modelo en aplicaciones interactivas, como asistentes virtuales o plataformas educativas.  
+- Explorar el uso de otros modelos preentrenados como EfficientNet para mejorar la precisión.  
+- Ampliar el dataset para incluir más diversidad cultural y enriquecer la capacidad de generalización del modelo.
+
+**Oportunidades Futuras**: Trabajar con análisis en tiempo real, incorporar otros gestos faciales y mejorar la personalización de servicios a través de la detección emocional.
+
+## 11. Reflexiones
+
+**Impacto en la Industria**: La implementación de este modelo de IA podría tener un impacto significativo en la industria de la salud mental, la educación y el marketing al facilitar la comprensión de las emociones humanas en interacciones virtuales.
+
+
+**Conclusión**: El proyecto logró desarrollar un modelo capaz de clasificar emociones a partir de expresiones faciales, cumpliendo el objetivo principal. A pesar de los desafíos encontrados, como el sobreajuste del modelo, el aprendizaje adquirido y la base establecida servirán para futuras mejoras y aplicaciones en el campo del análisis emocional.
+
+ """,
     },
     'English': {
         'title': 'Facial Expression Analysis',
@@ -96,8 +182,8 @@ with st.sidebar:
 st.title(texts['title'])
 
 # 4. Tabs for Navigation
-tab_names = ["Cargar Imagen", "Imágenes de Muestra", "Documentación"] if selected_language == 'Español' else ["Upload Image", "Sample Images", "Documentation"]
-tab1, tab2, tab3 = st.tabs(tab_names)
+tab_names = ["Cargar Imagen", "Captura de Cámara", "Imágenes de Muestra", "Documentación"] if selected_language == 'Español' else ["Upload Image", "Camera Capture", "Sample Images", "Documentation"]
+tab1, tab2, tab3, tab4 = st.tabs(tab_names)
 
 # 5. Sample Images Mapping
 class_to_idx = {
@@ -148,14 +234,21 @@ def load_sample_image(img_name):
 # 6. Handle Tabs
 with tab1:
     uploaded_file = st.file_uploader(texts['upload_image'], type=["jpg", "jpeg", "png"], help="Sube una imagen en formato JPG o PNG.")
-    img_file_buffer = st.camera_input("Tomar una foto" if selected_language == 'Español' else "Take a photo")
     st.info(texts['ethical_disclaimer'])
 
 with tab2:
+    # Make camera input optional
+    show_camera = st.button("Tomar una foto" if selected_language == 'Español' else "Take a Photo")
+    img_file_buffer = None
+    if show_camera:
+        img_file_buffer = st.camera_input("Captura una foto" if selected_language == 'Español' else "Capture a photo")
+    st.info(texts['ethical_disclaimer'])
+
+with tab3:
     sample_label = 'O seleccionar una imagen de ejemplo:' if selected_language == 'Español' else 'Or select a sample image:'
     selected_sample = st.selectbox(sample_label, ['Ninguna'] + list(sample_images.keys()) if selected_language == 'Español' else ['None'] + list(sample_images.keys()))
 
-with tab3:
+with tab4:
     st.markdown(texts['documentation_content'])
 
 # 7. Display Selected Image
@@ -166,21 +259,21 @@ if selected_sample != 'None' and selected_sample != 'Ninguna':
     if image:
         st.image(image, caption='Imagen de ejemplo seleccionada' if selected_language == 'Español' else 'Sample Image', use_column_width=True)
 
-elif uploaded_file is not None or img_file_buffer is not None:
-    if uploaded_file is not None:
-        try:
-            image = Image.open(uploaded_file)
-            st.image(image, caption='Imagen cargada' if selected_language == 'Español' else 'Uploaded Image', use_column_width=True)
-        except IOError:
-            st.error("El archivo cargado no es una imagen válida." if selected_language == 'Español' else "The uploaded file is not a valid image.")
-            image = None
-    elif img_file_buffer is not None:
-        try:
-            image = Image.open(img_file_buffer)
-            st.image(image, caption='Imagen capturada' if selected_language == 'Español' else 'Captured Image', use_column_width=True)
-        except IOError:
-            st.error("La foto tomada no es una imagen válida." if selected_language == 'Español' else "The captured photo is not a valid image.")
-            image = None
+elif uploaded_file is not None:
+    try:
+        image = Image.open(uploaded_file)
+        st.image(image, caption='Imagen cargada' if selected_language == 'Español' else 'Uploaded Image', use_column_width=True)
+    except IOError:
+        st.error("El archivo cargado no es una imagen válida." if selected_language == 'Español' else "The uploaded file is not a valid image.")
+        image = None
+
+elif img_file_buffer is not None:
+    try:
+        image = Image.open(img_file_buffer)
+        st.image(image, caption='Imagen capturada' if selected_language == 'Español' else 'Captured Image', use_column_width=True)
+    except IOError:
+        st.error("La foto tomada no es una imagen válida." if selected_language == 'Español' else "The captured photo is not a valid image.")
+        image = None
 else:
     st.info("Por favor, carga una imagen, toma una foto o selecciona una imagen de ejemplo." if selected_language == 'Español' else "Please upload an image, take a photo, or select a sample image.")
 
@@ -217,8 +310,14 @@ if image is not None:
             try:
                 response = requests.post(API_URL, files=files, data=data)
                 response.raise_for_status()
+            except requests.exceptions.HTTPError as http_err:
+                st.error(f"Error HTTP: {http_err}")
+            except requests.exceptions.ConnectionError:
+                st.error("No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet o intenta más tarde." if selected_language == 'Español' else "Could not connect to the server. Please check your internet connection or try again later.")
+            except requests.exceptions.Timeout:
+                st.error("La solicitud ha expirado. Por favor, intenta nuevamente." if selected_language == 'Español' else "The request has timed out. Please try again.")
             except requests.exceptions.RequestException as e:
-                st.error(f"Error: {e}")
+                st.error(f"Error inesperado: {e}" if selected_language == 'Español' else f"Unexpected error: {e}")
             else:
                 results = response.json()
                 expression_index = int(results.get('expresion', -1))
@@ -231,13 +330,21 @@ if image is not None:
                 st.subheader(texts['feedback_title'])
                 feedback_options = ('Sí', 'No') if selected_language == 'Español' else ('Yes', 'No')
                 feedback = st.radio("", feedback_options)
-                if feedback == 'No':
-                    correct_expression = st.selectbox('Seleccione la expresión correcta:' if selected_language == 'Español' else 'Select the correct expression:', list(sample_images.keys()))
-                    comments = st.text_area("Comentarios adicionales:" if selected_language == 'Español' else "Additional comments:")
+                if feedback == ('No' if selected_language == 'Español' else 'No'):
+                    correct_expression = st.selectbox(
+                        'Seleccione la expresión correcta:' if selected_language == 'Español' else 'Select the correct expression:',
+                        list(class_to_idx.values()) if selected_language == 'Español' else list(class_to_idx.values())
+                    )
+                    comments = st.text_area(
+                        "Comentarios adicionales:" if selected_language == 'Español' else "Additional comments:"
+                    )
                     if st.button(texts['submit_feedback']):
+                        # Here you could send this information to your backend to improve the model
+                        # For now, simply display a success message
                         st.success("Gracias por tu retroalimentación." if selected_language == 'Español' else "Thank you for your feedback.")
-                elif feedback == 'Sí':
+                elif feedback == ('Sí' if selected_language == 'Español' else 'Yes'):
                     st.success("¡Gracias por confirmar la predicción!" if selected_language == 'Español' else "Thank you for confirming the prediction!")
+                # Do nothing if 'No selection' is chosen
 
                 # Option to Download Annotated Image
                 st.download_button(
