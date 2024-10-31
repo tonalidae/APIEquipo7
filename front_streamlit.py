@@ -233,10 +233,10 @@ if image is not None:
                     mime=mime_type
                 )
 
-                # Compartir en Twitter
-                share_text = f"Detecté una expresión de {expresion} usando la app de Análisis de Expresiones Faciales."
-                share_url = f"https://twitter.com/intent/tweet?text={share_text}"
-                st.markdown(f"[Compartir en Twitter]({share_url})")
+                # # Compartir en Twitter
+                # share_text = f"Detecté una expresión de {expresion} usando la app de Análisis de Expresiones Faciales."
+                # share_url = f"https://twitter.com/intent/tweet?text={share_text}"
+                # st.markdown(f"[Compartir en Twitter]({share_url})")
 
                 # Agregar al Historial de Sesiones
                 if 'history' not in st.session_state:
