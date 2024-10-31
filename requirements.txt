@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+streamlit
+keras
+numpy
+opencv-python
+Pillow
+tensorflow
+python-multipart
+streamlit-cropper
+streamlit-authenticator

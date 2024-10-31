@@ -1,0 +1,18 @@
+/* style.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+
+/* style.css */
+body {
+    background-image: url('https://yourdomain.com/background.png');
+    background-size: cover;
+    font-family: 'Roboto', sans-serif;
+}
+h1 {
+    color: #FF4B4B;
+    font-family: 'Roboto', sans-serif;
+}
+.stButton>button {
+    background-color: #FF4B4B;
+    color: white;
+}
