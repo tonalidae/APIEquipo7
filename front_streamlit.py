@@ -30,25 +30,108 @@ translations = {
         'ethical_disclaimer': 'Aviso: Al cargar o capturar una imagen, confirmas que tienes los derechos para hacerlo y que la imagen no viola ninguna política de privacidad. Las imágenes no se almacenarán en el servidor.',
         'documentation_title': 'Documentación',
         'documentation_content': """
-            # Documentación de la Aplicación
+           # Documentación 
+Este documento sirve como una guía detallada para el desarrollo del proyecto de clasificación de emociones en expresiones faciales, llevado a cabo por el Equipo 7. A continuación, se presentan las distintas etapas del proyecto, incluyendo la definición del problema, la recolección de datos, el modelado y evaluación del modelo, así como la disponibilidad del modelo como una API.
 
-            Esta aplicación utiliza modelos de aprendizaje automático para analizar expresiones faciales en imágenes.
+## 1. Información del Proyecto
 
-            ## Cómo usar la aplicación
+**Nombre del Proyecto**: Clasificación de Emociones en Expresiones Faciales
 
-            1. **Selecciona la fuente de la imagen**: Elige entre cargar una imagen, tomar una foto o usar una imagen de ejemplo.
-            2. **Proporciona la imagen**: Sube la imagen, toma una foto o selecciona una imagen de ejemplo.
-            3. **Seleccionar el modelo**: Elige entre los modelos disponibles para el análisis.
-            4. **Analizar la imagen**: Haz clic en 'Analizar imagen' para obtener la predicción.
-            5. **Proporcionar retroalimentación**: Indica si la predicción es correcta y proporciona comentarios adicionales si lo deseas.
+**Integrantes del equipo**:  
+ 
+- Laura Vivan  
+- Isabel Kimura  
+- Stephanie Cely  
+- Ana Gaona Gómez  
+- Joice Clavijo  
 
-            ## Acerca de los modelos
 
-            Los modelos disponibles han sido entrenados en diferentes conjuntos de datos y pueden variar en precisión y velocidad.
 
-            ## Privacidad y Ética
+## 2. Definición del Problema
 
-            Las imágenes no se almacenan en el servidor y solo se utilizan para el análisis durante la sesión actual. Consulta el aviso ético para más detalles.
+La capacidad de interpretar correctamente las emociones a través de expresiones faciales es fundamental en la comunicación humana. Sin embargo, la interpretación emocional está sujeta a la subjetividad, lo que varía según el contexto cultural y la experiencia personal. Para abordar esta dificultad, proponemos desarrollar un sistema automatizado basado en inteligencia artificial (IA) que clasifique con precisión las emociones humanas a partir de expresiones faciales.
+
+**Objetivo**: Desarrollar un modelo que alcance una precisión mínima del 85%, evaluado en situaciones reales para mejorar la comunicación, reducir la subjetividad y optimizar la calidad de servicios en ámbitos como la salud mental, recursos humanos y marketing.
+
+
+
+## 4. Recolección de Datos
+
+**Datasets Utilizados**: FER-2013 y AffectNet, ambos disponibles en Kaggle. Se trata de datos no estructurados con formato de imagen (.jpg) y etiquetas (.csv). FER-2013 contiene 35,000 imágenes en 7 categorías emocionales, mientras que AffectNet posee 29,041 imágenes en 8 categorías (agrega la emoción "desprecio").
+
+**Calidad de los Datos**: Ambos datasets presentan variaciones en resolución y condiciones de iluminación. AffectNet se considera más diverso y mejor en calidad, lo cual fue determinante para su selección.
+
+**Aspectos Éticos y Privacidad**: Los datasets utilizados están disponibles públicamente y fueron diseñados para investigación, reduciendo riesgos de privacidad. Sin embargo, se garantiza que las imágenes no contienen información personal identificable y que se siguen las mejores prácticas para proteger la privacidad de los individuos.
+
+## 5. Exploración de Datos (EDA)
+
+Se realizó un análisis exploratorio de ambos datasets para entender mejor la distribución de las emociones y evaluar la calidad de las imágenes. AffectNet fue el dataset seleccionado debido a su mayor calidad y balance de clases.
+
+**Técnicas Utilizadas**: Se utilizó OpenCV para evaluar la calidad de las imágenes (borrosidad y ruido) y la biblioteca Mediapipe para analizar el movimiento de los landmarks faciales.
+
+**Conclusión**: AffectNet se eligió como el dataset principal ya que proporciona más información relevante para la clasificación de emociones.
+
+## 6. Modelado
+
+**Arquitectura del Modelo**: Se utilizó una red neuronal convolucional (CNN) con capas convolucionales, max-pooling, y una capa final con softmax para la clasificación de las emociones. También se evaluó el uso de modelos preentrenados como ResNet50 y Vision Transformer (ViT).
+
+**Preprocesamiento de Datos**: Las imágenes fueron redimensionadas a 96x96 píxeles y normalizadas dividiendo los valores de los píxeles entre 255. Se aplicó codificación one-hot a las etiquetas de las emociones.
+
+**Entrenamiento del Modelo**: El modelo se entrenó durante 10 épocas con un tamaño de lote de 32 y optimizador Adam. La función de pérdida utilizada fue categorical_crossentropy.
+
+**Evaluación del Modelo**: El modelo logró una precisión del 54.3% en el conjunto de validación. Se detectó sobreajuste al comparar la precisión en entrenamiento y validación, lo cual sugiere la necesidad de mejorar la arquitectura o la regularización del modelo.
+
+## 7. Disponibilidad del Modelo como API
+
+Para facilitar el acceso al modelo, desarrollamos una API utilizando FastAPI. La API recibe una imagen facial y devuelve una etiqueta que representa la emoción detectada. Este servicio es accesible y fácilmente integrable en aplicaciones en tiempo real.
+
+**Detalles de la API**:  
+- **Endpoint**: /sentiment/image/  
+- **Método**: POST  
+- **Parámetro**: file (imagen a analizar)  
+- **Respuesta**: JSON con la clave "expresion" indicando la emoción clasificada
+
+## 8. Documentación de la Aplicación
+
+Esta aplicación utiliza modelos de aprendizaje automático para analizar expresiones faciales en imágenes.
+
+### Cómo usar la aplicación
+
+1. **Cargar una imagen**: Puedes subir una imagen desde tu dispositivo o tomar una foto usando tu cámara.  
+2. **Seleccionar el modelo**: Elige entre los modelos disponibles para el análisis.  
+3. **Analizar la imagen**: Haz clic en 'Analizar imagen' para obtener la predicción.  
+4. **Proporcionar retroalimentación**: Indica si la predicción es correcta y proporciona comentarios adicionales si lo deseas.
+
+### Acerca de los modelos
+
+Los modelos disponibles han sido entrenados en diferentes conjuntos de datos y pueden variar en precisión y velocidad.
+
+### Privacidad y Ética
+
+Las imágenes no se almacenan en el servidor y solo se utilizan para el análisis durante la sesión actual. Consulta el aviso ético para más detalles.
+
+## 9. Monitoreo y Mantenimiento del Modelo
+
+**Monitoreo**: Se utilizarán herramientas como Prometheus y Grafana para monitorear la precisión de las predicciones y el tiempo de respuesta de la API. Se configurarán alertas automáticas para detectar y abordar de inmediato cualquier cambio significativo en el rendimiento del modelo.
+
+**Plan de Mantenimiento**: Se realizarán revisiones periódicas del modelo para asegurar que se mantenga actualizado y relevante. Además, se implementará un sistema de retroalimentación para permitir a los usuarios reportar clasificaciones incorrectas.
+
+**Reentrenamiento**: Si se obtienen nuevos datos o si el rendimiento disminuye significativamente, se procederá a reentrenar el modelo.
+
+## 10. Próximos Pasos y Oportunidades de Mejora
+
+**Siguientes Acciones**:  
+- Integrar el modelo en aplicaciones interactivas, como asistentes virtuales o plataformas educativas.  
+- Explorar el uso de otros modelos preentrenados como EfficientNet para mejorar la precisión.  
+- Ampliar el dataset para incluir más diversidad cultural y enriquecer la capacidad de generalización del modelo.
+
+**Oportunidades Futuras**: Trabajar con análisis en tiempo real, incorporar otros gestos faciales y mejorar la personalización de servicios a través de la detección emocional.
+
+## 11. Reflexiones 
+
+**Conclusión**: El proyecto logró desarrollar un modelo capaz de clasificar emociones a partir de expresiones faciales, cumpliendo el objetivo principal. A pesar de los desafíos encontrados, como el sobreajuste del modelo, el aprendizaje adquirido y la base establecida servirán para futuras mejoras y aplicaciones en el campo del análisis emocional.
+
+
         """,
     },
     'English': {
