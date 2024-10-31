@@ -35,7 +35,7 @@ translations = {
         'analyze_button': 'Analyze Image',
         'feedback_title': 'Is the prediction correct?',
         'submit_feedback': 'Submit Feedback',
-        # Agrega más traducciones según sea necesario
+        # Agrega más traducciones según sean necesarias
     }
 }
 
@@ -69,9 +69,14 @@ class_to_idx = {
 }
 
 sample_images = {
-    'Felicidad': 'felicidad.jpg',
-    'Tristeza': 'tristeza.jpg',
-    'Sorpresa': 'sorpresa.jpg'
+    'Felicidad': 'felicidad.png',
+    'Tristeza': 'tristeza.png',
+    'Sorpresa': 'sorpresa.png',
+    'Enojo': 'enojo.png',
+    'Miedo': 'miedo.png',
+    'Asco': 'asco.png',
+    'Desprecio': 'desprecio.png',
+    'Neutral': 'neutral.png'
 }
 
 def load_sample_image(img_name):
@@ -85,30 +90,6 @@ def load_sample_image(img_name):
         st.error(f"No se pudo abrir la imagen: {image_path}")
         return None
 
-# 6. Authentication (Opcional)
-# Descomenta y configura la autenticación si es necesario
-"""
-with open('config.yaml') as file:
-    config = yaml.load(file, Loader=SafeLoader)
-
-authenticator = stauth.Authenticate(
-    config['credentials'],
-    config['cookie']['name'],
-    config['cookie']['key'],
-    config['cookie']['expiry_days'],
-    config['preauthorized']
-)
-
-name, authentication_status, username = authenticator.login('Login', 'sidebar')
-
-if authentication_status:
-    st.sidebar.write(f'Bienvenido *{name}*')
-    authenticator.logout('Logout', 'sidebar')
-    # Coloca el contenido de la app aquí
-else:
-    st.error('Nombre de usuario o contraseña incorrectos')
-    st.stop()
-"""
 
 # 7. Manejo de Diferentes Tabs
 with tab1:
@@ -160,10 +141,18 @@ if image is not None:
         with st.spinner('Analizando la imagen...'):
             # Preparar los datos para enviar a la API
             buf = io.BytesIO()
-            image_format = image.format if image.format else 'JPEG'
-            image.save(buf, format='JPEG')  # Aseguramos que esté en JPEG
+            if image.mode == 'RGBA':
+                image = image.convert('RGB')  # Convertir a RGB si está en RGBA
+                save_format = 'JPEG'
+                mime_type = 'image/jpeg'
+                file_extension = 'jpg'
+            else:
+                save_format = 'PNG' if image.format == 'PNG' else 'JPEG'
+                mime_type = 'image/png' if save_format == 'PNG' else 'image/jpeg'
+                file_extension = 'png' if save_format == 'PNG' else 'jpg'
+            image.save(buf, format=save_format)
             byte_image = buf.getvalue()
-            files = {'file': ('image.jpg', byte_image, 'image/jpeg')}
+            files = {'file': (f'image.{file_extension}', byte_image, mime_type)}
 
             # Hacer la solicitud POST a la API
             try:
@@ -179,6 +168,10 @@ if image is not None:
                 st.error(f"Error inesperado: {e}")
             else:
                 results = response.json()
+                
+                # Mostrar la respuesta completa para depuración
+                st.write("Respuesta de la API:", results)
+
                 # Suponiendo que la API devuelve 'expresion', 'confidences' y 'boxes'
                 expresion = class_to_idx.get(int(results.get('expresion', -1)), 'Desconocida')
                 confidences = results.get('confidences', {})
@@ -189,7 +182,7 @@ if image is not None:
 
                 # Mostrar las Confidencias en un Gráfico de Barras si están Disponibles
                 if confidences:
-                    confidences_mapped = {class_to_idx[int(k)]: v for k, v in confidences.items()}
+                    confidences_mapped = {class_to_idx.get(int(k), 'Desconocida'): v for k, v in confidences.items()}
                     st.bar_chart(data=confidences_mapped)
 
                 # Anotar la Imagen con las Predicciones si Hay Cajas
@@ -198,24 +191,23 @@ if image is not None:
                     draw = ImageDraw.Draw(annotated_image)
                     font = ImageFont.load_default()
                     for box in boxes:
-                        bbox = box['box']  # [x1, y1, x2, y2]
-                        expr = class_to_idx.get(int(box['expresion']), 'Desconocida')
+                        bbox = box.get('box')  # Asegúrate de que la clave sea correcta
+                        expr = class_to_idx.get(int(box.get('expresion', -1)), 'Desconocida')
                         confidence = box.get('confidence', 0)
-                        # Dibujar el Rectángulo
-                        draw.rectangle(bbox, outline='red', width=2)
-                        # Añadir la Etiqueta
-                        text = f"{expr} ({confidence*100:.1f}%)"
-                        text_size = draw.textsize(text, font=font)
-                        text_position = (bbox[0], bbox[1] - text_size[1])
-                        draw.rectangle([text_position, (bbox[0] + text_size[0], bbox[1])], fill='red')
-                        draw.text(text_position, text, fill='white', font=font)
+                        if bbox:
+                            draw.rectangle(bbox, outline='red', width=2)
+                            text = f"{expr} ({confidence*100:.1f}%)"
+                            text_size = draw.textsize(text, font=font)
+                            text_position = (bbox[0], bbox[1] - text_size[1]) if bbox[1] - text_size[1] > 0 else (bbox[0], bbox[1])
+                            draw.rectangle([text_position, (bbox[0] + text_size[0], bbox[1])], fill='red')
+                            draw.text(text_position, text, fill='white', font=font)
                     st.image(annotated_image, caption='Resultado con anotaciones', use_column_width=True)
                 else:
                     st.warning("No se detectaron rostros en la imagen.")
 
                 # Mecanismo de Retroalimentación
-                st.subheader("¿Es correcta la predicción?")
-                feedback = st.radio("", ('Sí', 'No'), label_visibility='visible')
+                st.subheader(texts['feedback_title'])
+                feedback = st.radio("", ('Seleccione una opción', 'Sí', 'No'), label_visibility='visible', index=0)
                 if feedback == 'No':
                     correct_expression = st.selectbox('Seleccione la expresión correcta:', list(class_to_idx.values()), label_visibility='visible')
                     comments = st.text_area("Comentarios adicionales:", label_visibility='visible')
@@ -223,21 +215,22 @@ if image is not None:
                         # Aquí podrías enviar esta información a tu backend para mejorar el modelo
                         # Por ahora, simplemente mostramos un mensaje de éxito
                         st.success("Gracias por tu retroalimentación.")
-                else:
+                elif feedback == 'Sí':
                     st.success("¡Gracias por confirmar la predicción!")
+                # No hacer nada si 'Seleccione una opción' está seleccionado
 
                 # Opción para Descargar la Imagen Anotada
                 buf = io.BytesIO()
                 if boxes:
-                    annotated_image.save(buf, format='JPEG')
+                    annotated_image.save(buf, format=save_format)
                 else:
-                    image.save(buf, format='JPEG')
+                    image.save(buf, format=save_format)
                 byte_im = buf.getvalue()
                 st.download_button(
                     label="Descargar imagen",
                     data=byte_im,
-                    file_name='imagen_analizada.jpg',
-                    mime='image/jpeg'
+                    file_name=f'imagen_analizada.{file_extension}',
+                    mime=mime_type
                 )
 
                 # Compartir en Twitter
