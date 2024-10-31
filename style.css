@@ -142,8 +142,8 @@ div.stTabs > div > div > div {
 }
 
 div.stTabs > div > div > div:hover {
-    background-color: var(--accent-teal);
-    color: var(--neutral-white);
+    /* background-color: var(--accent-teal); */
+    /* color: var(--neutral-white); */
 }
 
 div.stTabs > div > div > div[class*="active"] {
