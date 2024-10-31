@@ -6,7 +6,8 @@ from PIL import Image
 import io
 
 # Cargar el modelo entrenado
-model = load_model('modelo_affect_net.h5')
+#model = load_model('modelo_affect_net.h5')
+model = load_model('modelo_affect_net_20_epocas.h5')
 
 # Inicializar la API
 app = FastAPI()

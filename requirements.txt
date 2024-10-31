@@ -9,3 +9,6 @@ tensorflow
 python-multipart
 streamlit-cropper
 streamlit-authenticator
+torch
+torchvision
+timm

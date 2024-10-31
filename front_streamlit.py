@@ -135,7 +135,7 @@ if image is not None:
         image = cropped_image
 
     # 10. Analizar Imagen
-    API_URL = "http://localhost:8000/sentiment/image/"
+    API_URL = "https://1e53-186-154-39-104.ngrok-free.app/sentiment/image/"
 
     if st.button(texts['analyze_button']):
         with st.spinner('Analizando la imagen...'):
